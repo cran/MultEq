@@ -17,8 +17,8 @@ procedure is also available.
 \tabular{ll}{
 Package: \tab MultEq\cr
 Type: \tab Package\cr
-Version: \tab 1.0\cr
-Date: \tab 2008-01-08\cr
+Version: \tab 2.0\cr
+Date: \tab 2008-01-30\cr
 License: \tab GPL\cr
 }
 \item{multeq.diff}{Equivalence tests and related confidence intervals for
