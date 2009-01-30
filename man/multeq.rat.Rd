@@ -20,19 +20,19 @@ multeq.rat(data, grp, resp = NULL, base = 1, margin.lo = NULL, margin.up = NULL,
                     relating to the endpoints }
   \item{margin.up}{ a vector of relative upper margins under the null hypotheses
                     relating to the endpoints }
-  \item{method}{ a character string: 
-                   \item "step.up": method of Quan et al. (2001),
-                   \item "single.step": Bonferroni-adjusted single-step 
-                                        procedure}
+  \item{method}{ a character string:
+    \itemize{
+      \item "step.up": method of Quan et al. (2001),
+      \item "single.step": Bonferroni-adjusted single-step procedure } }
   \item{var.equal}{ a logical indicating homogeneous or heterogeneous variances
                     of the data }
   \item{FWER}{ a single numeric value specifying the familywise error rate to be
-               controlled }
+               controlled by the simultaneous confidence intervals }
 }
 \details{
-The object is to show equivalence for two treatment groups on multiple primary,
+The objective is to show equivalence for two treatment groups on multiple primary,
 normally distributed response variables (endpoints). If margin.up is not given,
-one-sided tests are done for the alternative hypothesis that the ratios (to the
+one-sided tests are applied for the alternative hypothesis that the ratios (to the
 base group) of the means is larger than margin.lo. Analogously, same vice versa.
 Only if both margin.lo and margin.up are given, a two-sided equivalence tests
 for ratios is done. Bonferroni adjusted "two one-sided t-tests" (TOST) and

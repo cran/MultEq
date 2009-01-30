@@ -1,0 +1,7 @@
+export(multeq.diff, multeq.rat)
+
+S3method(print, multeq.diff)
+S3method(summary, multeq.diff)
+
+S3method(print, multeq.rat)
+S3method(summary, multeq.rat)

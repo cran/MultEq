@@ -8,7 +8,7 @@ Equivalence for multiple endpoints
 \description{
 The package provides tests and confidence intervals for comparing two
 treatments when there is more than one primary response variable
-(endpoint) given. The step-up procedure of Quan et al. (2001) is both
+(endpoint). The step-up procedure of Quan et al. (2001) is both
 applied for differences and extended to ratios of means of normally
 distributed data with equal group variances. A related single-step
 procedure is also available.
@@ -17,25 +17,24 @@ procedure is also available.
 \tabular{ll}{
 Package: \tab MultEq\cr
 Type: \tab Package\cr
-Version: \tab 2.0\cr
-Date: \tab 2008-01-30\cr
+Version: \tab 2.2\cr
+Date: \tab 2009-01-30\cr
 License: \tab GPL\cr
+LazyLoad: \tab yes\cr
 }
-\item{multeq.diff}{Equivalence tests and related confidence intervals for
-  differences of normal means of multiple endpoints}
-\item{multeq.rat}{Equivalence tests and related confidence intervals for
-  ratios of normal means of multiple endpoints}
-\item{clinic}{Data set of body measurements in a clinical study}
+\itemize{
+  \item{multeq.diff}{Equivalence tests and related confidence intervals for
+    differences of normal means of multiple endpoints}
+  \item{multeq.rat}{Equivalence tests and related confidence intervals for
+    ratios of normal means of multiple endpoints}
+  \item{clinic}{Data set of body measurements in a clinical study} }
 }
 \author{
 Mario Hasler
 
-Maintainer: Mario Hasler <hasler@biostat.uni-hannover.de>
+Maintainer: Mario Hasler <hasler@email.uni-kiel.de>
 }
 \references{
-Hothorn, L.A. and Hasler, M. (in process): Proof of hazard and proof of
-safety in toxicological studies using simultaneous confidence intervals
-for differences and ratios to control;
 Quan et al. (2001): Assessmant of equivalence on multiple endpoints,
 Statistics in Medicine 20, 3159-3173
 }

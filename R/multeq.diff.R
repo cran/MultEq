@@ -1,5 +1,7 @@
 `multeq.diff` <-
-function(data,grp,resp=NULL,base=1,margin.lo=NULL,margin.up=NULL,method="single.step",var.equal=FALSE,FWER=0.05) {
+function(data,grp,resp=NULL,base=1,margin.lo=NULL,margin.up=NULL,
+                        method="single.step",var.equal=FALSE,FWER=0.05) {
+
 
 if (length(grp) > 1) {
   stop("Specify only one grouping variable")
@@ -20,6 +22,7 @@ if (is.null(resp)) {
   Resp.X <- Resp.X[resp]
   Resp.Y <- Resp.Y[resp]
 }
+
 if (is.numeric(margin.lo) & length(margin.lo) != n.ep) {
   stop("Length of margin.lo is not equal to the number of response variables")
 }
@@ -124,14 +127,15 @@ value <- list(comp.name=comp.name,estimate=estimate,degr.fr=degr.fr,test.stat=te
               p.value=p.value,lower=lower,upper=upper,margin.lo=margin.lo,margin.up=margin.up,
               base=base,method=method,var.equal=var.equal,FWER=FWER)
 
-names(value$test.stat) <- resp
-names(value$p.value) <- resp
-names(value$lower) <- names(value$upper) <- resp
-if (is.numeric(margin.lo)) { names(value$margin.lo) <- resp }
-if (is.numeric(margin.up)) { names(value$margin.up) <- resp }
+names(value$test.stat) <- names(estimate)
+names(value$p.value) <- names(estimate)
+names(value$lower) <- names(value$upper) <- names(estimate)
+if (is.numeric(margin.lo)) { names(value$margin.lo) <- names(estimate) }
+if (is.numeric(margin.up)) { names(value$margin.up) <- names(estimate) }
 class(value) <- "multeq.diff"
 
 return(value)
+
 
 }
 

@@ -1,5 +1,7 @@
 `multeq.rat` <-
-function(data,grp,resp=NULL,base=1,margin.lo=NULL,margin.up=NULL,method="single.step",var.equal=FALSE,FWER=0.05) {
+function(data,grp,resp=NULL,base=1,margin.lo=NULL,margin.up=NULL,
+                       method="single.step",var.equal=FALSE,FWER=0.05) {
+
 
 if (length(grp) > 1) {
   stop("Specify only one grouping variable")
@@ -20,6 +22,7 @@ if (is.null(resp)) {
   Resp.X <- Resp.X[resp]
   Resp.Y <- Resp.Y[resp]
 }
+
 if (is.numeric(margin.lo) & length(margin.lo) != n.ep) {
   stop("Length of margin.lo is not equal to the number of response variables")
 }
@@ -33,8 +36,6 @@ if (!is.logical(var.equal)) {
 }
 
 X.n <- nrow(Resp.X); Y.n <- nrow(Resp.Y)                                 # sample sizes for X and Y
-test.stat <- numeric(n.ep)
-
 X.mean <- mean(Resp.X); Y.mean <- mean(Resp.Y)                           # mean vectors for X and Y
 estimate <- X.mean/Y.mean
 cov.matX <- cov(Resp.X)                                                  # just the variances needed
@@ -43,34 +44,43 @@ if (var.equal==TRUE) {
   cov.mat=((X.n-1)*cov.matX+(Y.n-1)*cov.matY)/(X.n+Y.n-2)                # common estimated covariance matrix of the data
   degr.fr <- X.n+Y.n-2                                                   # df (single number)
 } else {
-  degr.fr <- ( diag(cov.matX)/X.n + diag(cov.matY)/Y.n )^2 /             # df (vector)
-             ( (diag(cov.matX)/X.n)^2 / (X.n-1) + (diag(cov.matY)/Y.n)^2 / (Y.n-1) )
+  degr.fr.up <- ( diag(cov.matX)/X.n + margin.lo^2*diag(cov.matY)/Y.n )^2 /   # Welch degrees of freedom for test "up"
+                ( (diag(cov.matX)/X.n)^2 / (X.n-1) + (margin.lo^2*diag(cov.matY)/Y.n)^2 / (Y.n-1) )
+  degr.fr.do <- ( diag(cov.matX)/X.n + margin.up^2*diag(cov.matY)/Y.n )^2 /   # Welch degrees of freedom for test "do"
+                ( (diag(cov.matX)/X.n)^2 / (X.n-1) + (margin.up^2*diag(cov.matY)/Y.n)^2 / (Y.n-1) )
+  degr.fr.ci <- ( diag(cov.matX)/X.n + estimate^2*diag(cov.matY)/Y.n )^2 /    # Welch degrees of freedom for CI (plug in)
+                ( (diag(cov.matX)/X.n)^2 / (X.n-1) + (estimate^2*diag(cov.matY)/Y.n)^2 / (Y.n-1) )
 }
 
 if (is.numeric(margin.lo)) {
-  if (var.equal==TRUE) T.up <- (X.mean-margin.lo*Y.mean)/(  sqrt(diag(cov.mat))*sqrt( 1/X.n + margin.lo^2/Y.n )  )
-  else  T.up <- (X.mean-margin.lo*Y.mean)/(  sqrt( diag(cov.matX)/X.n + diag(cov.matY)*margin.lo^2/Y.n )  )
+  if (var.equal==TRUE) test.stat.up <- (X.mean-margin.lo*Y.mean)/(  sqrt(diag(cov.mat))*sqrt( 1/X.n + margin.lo^2/Y.n )  )
+  else  test.stat.up <- (X.mean-margin.lo*Y.mean)/(  sqrt( diag(cov.matX)/X.n + diag(cov.matY)*margin.lo^2/Y.n )  )
 }
 if (is.numeric(margin.up)) {
-  if (var.equal==TRUE) T.do <- (X.mean-margin.up*Y.mean)/(  sqrt(diag(cov.mat))*sqrt( 1/X.n + margin.up^2/Y.n )  )
-  else T.do <- (X.mean-margin.up*Y.mean)/(  sqrt( diag(cov.matX)/X.n + diag(cov.matY)*margin.up^2/Y.n )  )
+  if (var.equal==TRUE) test.stat.do <- (X.mean-margin.up*Y.mean)/(  sqrt(diag(cov.mat))*sqrt( 1/X.n + margin.up^2/Y.n )  )
+  else test.stat.do <- (X.mean-margin.up*Y.mean)/(  sqrt( diag(cov.matX)/X.n + diag(cov.matY)*margin.up^2/Y.n )  )
 }
 
-if ((is.numeric(margin.lo)) & is.numeric(margin.up)) {
-  for (i in 1:n.ep) test.stat[i] <- min(T.up[i],-T.do[i])
+if (var.equal==TRUE)
+{
+  test.stat <- numeric(n.ep)
+  if ((is.numeric(margin.lo)) & is.numeric(margin.up)) {
+    for (i in 1:n.ep) test.stat[i] <- min(test.stat.up[i],-test.stat.do[i])
+  }
+  if ((is.numeric(margin.lo)) & is.numeric(margin.up)==FALSE) {
+    test.stat <- test.stat.up
+  }
+  if ((is.numeric(margin.lo)==FALSE) & is.numeric(margin.up)) {
+    test.stat <- -test.stat.do
+  }
 }
-if ((is.numeric(margin.lo)) & is.numeric(margin.up)==FALSE) {
-  test.stat <- T.up
-}
-if ((is.numeric(margin.lo)==FALSE) & is.numeric(margin.up)) {
-  test.stat <- -T.do
-}
+
+p.value <- numeric(n.ep)
 
 if (method == "step.up") {
-  p.value <- numeric(n.ep)
-  g <- numeric(n.ep)                                                     # see Dilba et al. 2004 p. 446
   lower <- numeric(n.ep); upper <- numeric(n.ep)
   if (var.equal==TRUE) {
+    g <- numeric(n.ep)                                                   # see Dilba et al. 2004 p. 446
     for (i in 1:n.ep){
       pos <- which(p.value<FWER)
       if (length(pos)==n.ep+1-i){
@@ -87,13 +97,16 @@ if (method == "step.up") {
       }
     }
   } else {
-    for (i in 1:n.ep){
+    p.value.up <- numeric(n.ep); p.value.do <- numeric(n.ep)
+    for (i in 1:n.ep) {
       pos <- which(p.value<FWER)
       if (length(pos)==n.ep+1-i){
-        p.value[pos]=pt(q=test.stat[pos],df=degr.fr[pos],lower.tail=FALSE)*i
-        Ai <- (Y.mean[pos])^2-qt(p=1-FWER/i,df=degr.fr[pos])^2*diag(cov.matY)[pos]/Y.n
+        p.value.up[pos]=pt(q=test.stat.up[pos],df=degr.fr.up[pos],lower.tail=FALSE)*i
+        p.value.do[pos]=pt(q=test.stat.do[pos],df=degr.fr.do[pos],lower.tail=TRUE)*i
+        for (i in seq(along.with=pos)) p.value[i] <- max(p.value.up[i],p.value.do[i])
+        Ai <- (Y.mean[pos])^2-qt(p=1-FWER/i,df=degr.fr.ci[pos])^2*diag(cov.matY)[pos]/Y.n
         Bi <- -2*X.mean[pos]*Y.mean[pos]
-        Ci <- (X.mean[pos])^2-qt(p=1-FWER/i,df=degr.fr[pos])^2*diag(cov.matX)[pos]/X.n
+        Ci <- (X.mean[pos])^2-qt(p=1-FWER/i,df=degr.fr.ci[pos])^2*diag(cov.matX)[pos]/X.n
         Discrimi <- Bi^2-4*Ai*Ci
         if ( all(Ai > 0) & all(Discrimi >= 0) ) {
           if (is.numeric(margin.lo)) {
@@ -109,8 +122,8 @@ if (method == "step.up") {
 }
 if (method == "single.step")
 {
-  p.value=pt(q=test.stat,df=degr.fr,lower.tail=FALSE)*n.ep
   if (var.equal==TRUE) {
+    p.value <- pt(q=test.stat,df=degr.fr,lower.tail=FALSE)*n.ep
     g=(qt(p=1-FWER/n.ep,df=degr.fr))^2*diag(cov.mat)/( Y.n*(Y.mean)^2 )
     if ( all(g<1) ) {
       if (is.numeric(margin.lo)) {
@@ -121,9 +134,12 @@ if (method == "single.step")
       } else { upper=rep(Inf,n.ep) }
     } else { lower <- upper <- "NSD" }
   } else {
-    Ai <- (Y.mean)^2-qt(p=1-FWER/n.ep,df=degr.fr)^2*diag(cov.matY)/Y.n
+    p.value.up <- pt(q=test.stat.up,df=degr.fr.up,lower.tail=FALSE)*n.ep
+    p.value.do <- pt(q=test.stat.do,df=degr.fr.do,lower.tail=TRUE)*n.ep
+    for (i in 1:n.ep) p.value[i] <- max(p.value.up[i],p.value.do[i])
+    Ai <- (Y.mean)^2-qt(p=1-FWER/n.ep,df=degr.fr.ci)^2*diag(cov.matY)/Y.n
     Bi <- -2*X.mean*Y.mean
-    Ci <- (X.mean)^2-qt(p=1-FWER/n.ep,df=degr.fr)^2*diag(cov.matX)/X.n
+    Ci <- (X.mean)^2-qt(p=1-FWER/n.ep,df=degr.fr.ci)^2*diag(cov.matX)/X.n
     Discrimi <- Bi^2-4*Ai*Ci
     if ( all(Ai > 0) & all(Discrimi >= 0) ) {
       if (is.numeric(margin.lo)) {
@@ -137,18 +153,28 @@ if (method == "single.step")
 }
 p.value[p.value>1]=1
 
-value <- list(comp.name=comp.name,estimate=estimate,degr.fr=degr.fr,test.stat=test.stat,
-              p.value=p.value,lower=lower,upper=upper,margin.lo=margin.lo,margin.up=margin.up,
-              base=base,method=method,var.equal=var.equal,FWER=FWER)
+if (var.equal==TRUE)
+{
+  value <- list(comp.name=comp.name,estimate=estimate,degr.fr=degr.fr,test.stat=test.stat,
+                p.value=p.value,lower=lower,upper=upper,margin.lo=margin.lo,margin.up=margin.up,
+                base=base,method=method,var.equal=var.equal,FWER=FWER)
+  names(value$test.stat) <- names(estimate)
+} else {
+  value <- list(comp.name=comp.name,estimate=estimate,degr.fr.up=degr.fr.up,degr.fr.do=degr.fr.do,
+                degr.fr.ci=degr.fr.ci,test.stat.up=test.stat.up,test.stat.do=test.stat.do,p.value=p.value,
+                lower=lower,upper=upper,margin.lo=margin.lo,margin.up=margin.up,
+                base=base,method=method,var.equal=var.equal,FWER=FWER)
+  names(value$test.stat.up) <- names(value$test.stat.do) <- names(estimate)
+}
 
-names(value$test.stat) <- resp
-names(value$p.value) <- resp
-names(value$lower) <- names(value$upper) <- resp
-if (is.numeric(margin.lo)) { names(value$margin.lo) <- resp }
-if (is.numeric(margin.up)) { names(value$margin.up) <- resp }
+names(value$p.value) <- names(estimate)
+if (is.numeric(lower)) { names(value$lower) <- names(value$upper) <- names(estimate) } # both together
+if (is.numeric(margin.lo)) { names(value$margin.lo) <- names(estimate) }
+if (is.numeric(margin.up)) { names(value$margin.up) <- names(estimate) }
 class(value) <- "multeq.rat"
 
 return(value)
+
 
 }
 
