@@ -1,4 +1,4 @@
-`print.multeq.diff` <-
+print.multeq.diff <-
 function(x,digits=4,...) {
 
 

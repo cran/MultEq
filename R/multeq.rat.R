@@ -1,4 +1,4 @@
-`multeq.rat` <-
+multeq.rat <-
 function(data,grp,resp=NULL,base=1,margin.lo=NULL,margin.up=NULL,
                        method="single.step",var.equal=FALSE,FWER=0.05) {
 
@@ -36,7 +36,7 @@ if (!is.logical(var.equal)) {
 }
 
 X.n <- nrow(Resp.X); Y.n <- nrow(Resp.Y)                                 # sample sizes for X and Y
-X.mean <- mean(Resp.X); Y.mean <- mean(Resp.Y)                           # mean vectors for X and Y
+X.mean <- colMeans(Resp.X); Y.mean <- colMeans(Resp.Y)                   # mean vectors for X and Y
 estimate <- X.mean/Y.mean
 cov.matX <- cov(Resp.X)                                                  # just the variances needed
 cov.matY <- cov(Resp.Y)                                                  # just the variances needed

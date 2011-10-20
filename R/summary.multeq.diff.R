@@ -1,4 +1,4 @@
-`summary.multeq.diff` <-
+summary.multeq.diff <-
 function(object,digits=4,...) {
 
 

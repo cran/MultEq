@@ -1,4 +1,4 @@
-`print.multeq.rat` <-
+print.multeq.rat <-
 function(x,digits=4,...) {
 
 

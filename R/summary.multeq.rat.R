@@ -1,4 +1,4 @@
-`summary.multeq.rat` <-
+summary.multeq.rat <-
 function(object,digits=4,...) {
 
 

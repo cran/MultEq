@@ -17,8 +17,8 @@ procedure is also available.
 \tabular{ll}{
 Package: \tab MultEq\cr
 Type: \tab Package\cr
-Version: \tab 2.2\cr
-Date: \tab 2009-01-30\cr
+Version: \tab 2.3\cr
+Date: \tab 2011-10-20\cr
 License: \tab GPL\cr
 LazyLoad: \tab yes\cr
 }
