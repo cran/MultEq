@@ -1,5 +1,7 @@
 export(multeq.diff, multeq.rat)
 
+importFrom("stats", "cov", "pt", "qt")
+
 S3method(print, multeq.diff)
 S3method(summary, multeq.diff)
 

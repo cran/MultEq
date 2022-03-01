@@ -1,5 +1,5 @@
-43afaea7dd768ea370a4bce0662f0887 *DESCRIPTION
-804ad28b41ed146248fc578d6e62cd45 *NAMESPACE
+9bd7d17569a6558ba2b9c1d8215991dc *DESCRIPTION
+eefa5825428db68bf0d4fbe774d4834a *NAMESPACE
 19763ea2fbde71cbfcb2f075c6de328f *R/multeq.diff.R
 8c81048b8f3013980cf63e7073e31167 *R/multeq.rat.R
 969188b453db1d3f3f1e2a84d1793cf1 *R/print.multeq.diff.R
@@ -7,7 +7,7 @@ d8ca8e501a0ea9e86f4d40a55b2a3728 *R/print.multeq.rat.R
 6e53ee3e8432ebcb3aa9761438cf19be *R/summary.multeq.diff.R
 45c368820fa1ac578bc4503d33438b05 *R/summary.multeq.rat.R
 33a1cdc6bd8a7112a67c3f4cc24d6189 *data/clinic.rda
-c55d3a0c4e9d006b383696d409d756ce *man/MultEq-package.Rd
+406bf8b83bc9996683a51bac6da7b4b2 *man/MultEq-package.Rd
 cb83461ef74d96c7a9020178d7ae39b8 *man/clinic.Rd
 e18c69d6951087f9df0c5bb0f5b771a4 *man/multeq.diff.Rd
 0ba61d4ab3c0deca134dafb16f2a3fcf *man/multeq.rat.Rd
